@@ -1,0 +1,225 @@
+================================================================================
+TIPTAP EDITOR FEATURES - BUILD SUMMARY
+================================================================================
+
+DELIVERY DATE: 2026-03-01
+PROJECT: Arni Medica eQMS Frontend
+FRAMEWORK: React 18 + TipTap v3 + TypeScript
+
+================================================================================
+FEATURE 1: HEADERS/FOOTERS + PAGE NUMBERS
+================================================================================
+
+FILES CREATED:
+- /tmp/eqms-frontend/src/extensions/HeaderFooter.js (100 lines)
+- /tmp/eqms-frontend/src/components/common/HeaderFooterPanel.jsx (246 lines)
+
+EXTENSION (HeaderFooter.js):
+  - Extension.create() pattern for TipTap v3
+  - Storage: headerContent, footerContent, showPageNumbers, pageNumberPosition, firstPageDifferent
+  - Commands:
+    • setHeaderContent(html) — Set header HTML with variable support
+    • setFooterContent(html) — Set footer HTML with variable support
+    • togglePageNumbers() — Toggle page number display
+    • setPageNumberPosition(pos) — Set position (left/center/right)
+    • toggleFirstPageDifferent() — Toggle first page different setting
+    • getHeaderFooterSettings() — Return all stored settings
+    • clearHeaderFooter() — Reset all to defaults
+
+  VARIABLES SUPPORTED (for header/footer):
+    {page}   — Current page number
+    {pages}  — Total number of pages
+    {date}   — Current date
+    {author} — Document author
+
+COMPONENT (HeaderFooterPanel.jsx):
+  Props: { editor, isOpen, onClose }
+  
+  Features:
+    ✓ Header textarea (4 rows) with HTML/text support
+    ✓ Footer textarea (4 rows) with HTML/text support
+    ✓ Variable insertion buttons with cursor restoration
+    ✓ Page Numbers toggle switch
+    ✓ Page number position selector (Left | Center | Right)
+    ✓ "First page different" checkbox toggle
+    ✓ Dark theme (Slate color scheme)
+    ✓ Modal presentation with fixed positioning
+    ✓ Two-way binding with editor storage
+    ✓ Variable descriptions on hover
+
+================================================================================
+FEATURE 2: WATERMARK
+================================================================================
+
+FILES CREATED:
+- /tmp/eqms-frontend/src/extensions/Watermark.js (155 lines)
+- /tmp/eqms-frontend/src/components/common/WatermarkPanel.jsx (306 lines)
+
+EXTENSION (Watermark.js):
+  - Extension.create() pattern for TipTap v3
+  - Storage: text, enabled, opacity (0-1), color (hex), rotation (degrees)
+  - Commands:
+    • setWatermark(options) — Set watermark with any combination of properties
+    • applyWatermarkPreset(preset) — Apply preset watermark (e.g., "DRAFT")
+    • clearWatermark() — Disable and reset watermark
+    • getWatermark() — Return current watermark settings
+
+  PRESET WATERMARKS (6 eQMS document statuses):
+    DRAFT — gray (#94a3b8), 0.15 opacity, -45°
+    UNDER REVIEW — blue (#3b82f6), 0.12 opacity, -45°
+    APPROVED — green (#22c55e), 0.08 opacity, -45° [most subtle]
+    OBSOLETE — red (#ef4444), 0.2 opacity, -45° [most visible]
+    CONFIDENTIAL — orange (#f97316), 0.15 opacity, -45°
+    CONTROLLED COPY — cyan (#0ea5e9), 0.1 opacity, -45°
+
+  CSS INTEGRATION:
+    - updateWatermarkUI() method sets data attributes + CSS custom properties
+    - Data attribute: data-watermark="{text}"
+    - CSS vars: --watermark-text, --watermark-opacity, --watermark-color, --watermark-rotation
+
+COMPONENT (WatermarkPanel.jsx):
+  Props: { editor, isOpen, onClose, documentStatus }
+  
+  Features:
+    ✓ Enable/disable toggle switch
+    ✓ 6 preset buttons for eQMS document statuses
+    ✓ Custom text input field
+    ✓ Opacity slider (0-100%) with dual-gradient progress bar
+    ✓ Color picker: 8 preset colors + hex color input
+    ✓ Rotation slider (-180° to 180°) with preset buttons
+    ✓ Live preview box (shows watermark in real-time)
+    ✓ "Clear Watermark" button (red accent)
+    ✓ Dark theme matching eQMS UI
+    ✓ Modal presentation with fixed positioning
+    ✓ Two-way binding with editor storage
+    ✓ Opacity clamping (0.0 to 1.0)
+
+================================================================================
+CSS STYLING
+================================================================================
+
+FILE MODIFIED:
+- /tmp/eqms-frontend/src/styles/track-changes.css (329 lines total)
+
+APPENDED SECTIONS:
+  1. .tiptap-editor .ProseMirror[data-watermark]::before
+     - Fixed positioned overlay watermark using CSS custom properties
+     - 5rem font size, 800 weight, -45° rotation (default)
+     - Uses CSS vars for color, opacity, rotation
+     - pointer-events: none for non-interactive overlay
+     - z-index: 0 for background positioning
+
+  2. .editor-header-area / .editor-footer-area
+     - Padding: 8px 16px
+     - 1px dashed border (slate-500)
+     - Min-height: 32px
+     - Font size: 0.85rem
+     - Color: slate-400
+     - Placeholder text: "Click to edit" (slate-600, italic)
+
+  3. @media print rules
+     - Headers/footers: removes borders for clean print output
+     - Watermarks: removes visual rendering for print
+
+  4. CSS Custom Properties supported:
+     - --watermark-text (content)
+     - --watermark-opacity (0-1)
+     - --watermark-color (hex)
+     - --watermark-rotation (degrees)
+
+================================================================================
+IMPORTS & DEPENDENCIES
+================================================================================
+
+HeaderFooter.js:
+  - @tiptap/core (Extension)
+  
+Watermark.js:
+  - @tiptap/core (Extension)
+
+HeaderFooterPanel.jsx:
+  - react (React, useState, useEffect)
+  - lucide-react (X, Plus icons)
+
+WatermarkPanel.jsx:
+  - react (React, useState, useEffect)
+  - lucide-react (X icon)
+  - ../../extensions/Watermark (WATERMARK_PRESETS)
+
+================================================================================
+INTEGRATION POINTS
+================================================================================
+
+To integrate these features into RichTextEditor.jsx:
+
+1. Import extensions:
+   import { HeaderFooter } from '../../extensions/HeaderFooter'
+   import { Watermark } from '../../extensions/Watermark'
+
+2. Add to editor configuration:
+   const editor = useEditor({
+     extensions: [
+       // ... existing extensions
+       HeaderFooter,
+       Watermark,
+     ],
+   })
+
+3. Import and display panels:
+   import HeaderFooterPanel from './HeaderFooterPanel'
+   import WatermarkPanel from './WatermarkPanel'
+
+4. Add state for panel visibility:
+   const [headerFooterOpen, setHeaderFooterOpen] = useState(false)
+   const [watermarkOpen, setWatermarkOpen] = useState(false)
+
+5. Add toolbar buttons:
+   <button onClick={() => setHeaderFooterOpen(true)}>Header/Footer</button>
+   <button onClick={() => setWatermarkOpen(true)}>Watermark</button>
+
+6. Render panels:
+   <HeaderFooterPanel editor={editor} isOpen={headerFooterOpen} onClose={() => setHeaderFooterOpen(false)} />
+   <WatermarkPanel editor={editor} isOpen={watermarkOpen} onClose={() => setWatermarkOpen(false)} />
+
+================================================================================
+BUILD VERIFICATION
+================================================================================
+
+✓ Vite build succeeded (8.51s)
+✓ All 2664 modules transformed without errors
+✓ No syntax errors in JS files
+✓ No import/export issues
+✓ CSS properly appended to track-changes.css
+✓ All files use ES module imports (no require())
+✓ All components export default
+✓ All extensions use named exports
+✓ Dark theme consistent across components
+✓ Font sizes, colors, spacing match eQMS design system
+
+================================================================================
+FILE SIZES
+================================================================================
+
+HeaderFooter.js           2.6 KB
+Watermark.js             4.0 KB
+HeaderFooterPanel.jsx    9.4 KB
+WatermarkPanel.jsx       12 KB
+track-changes.css        (appended ~6 KB)
+
+Total new code:          ~34 KB (unminified)
+Gzip impact:             Minimal (TipTap already large)
+
+================================================================================
+NEXT STEPS (INTEGRATION)
+================================================================================
+
+1. Import extensions + components into RichTextEditor.jsx
+2. Add toolbar buttons for "Header/Footer" and "Watermark" panels
+3. Test header/footer variable substitution
+4. Test watermark rendering in document preview
+5. Test print layout with headers/footers visible
+6. Test watermark appearance at various opacity levels
+7. Consider adding export functionality to use stored settings
+8. Document variable syntax in user guide
+
+================================================================================

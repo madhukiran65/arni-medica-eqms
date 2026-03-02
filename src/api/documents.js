@@ -1,0 +1,36 @@
+import client from './client'
+
+const documentsAPI = {
+  list: (params = {}) => client.get('/documents/documents/', { params }),
+  get: (id) => client.get(`/documents/documents/${id}/`),
+  create: (data) => client.post('/documents/documents/', data),
+  update: (id, data) => client.patch(`/documents/documents/${id}/`, data),
+  delete: (id) => client.delete(`/documents/documents/${id}/`),
+  transition: (id, data) => client.post(`/documents/documents/${id}/lifecycle_transition/`, data),
+  availableTransitions: (id) => client.get(`/documents/documents/${id}/available_transitions/`),
+  content: (id) => client.get(`/documents/documents/${id}/content/`),
+  updateContent: (id, data) => client.put(`/documents/documents/${id}/content/`, data),
+  checkout: (id) => client.post(`/documents/documents/${id}/checkout/`),
+  checkin: (id, data) => client.post(`/documents/documents/${id}/checkin/`, data),
+  lock: (id) => client.post(`/documents/documents/${id}/lock/`),
+  submitForReview: (id, data) => client.post(`/documents/documents/${id}/submit_for_review/`, data),
+  approve: (id, data) => client.post(`/documents/documents/${id}/approve/`, data),
+  finalApprove: (id, data) => client.post(`/documents/documents/${id}/final_approve/`, data),
+  makeEffective: (id, data) => client.post(`/documents/documents/${id}/make_effective/`, data),
+  makeObsolete: (id, data) => client.post(`/documents/documents/${id}/make_obsolete/`, data),
+  archive: (id, data) => client.post(`/documents/documents/${id}/archive_document/`, data),
+  cancel: (id, data) => client.post(`/documents/documents/${id}/cancel_document/`, data),
+  initiateRevision: (id, data) => client.post(`/documents/documents/${id}/initiate_revision/`, data),
+  comments: (id) => client.get(`/documents/documents/${id}/comments/`),
+  addComment: (id, data) => client.post(`/documents/documents/${id}/comments/`, data),
+  acknowledge: (id) => client.post(`/documents/documents/${id}/acknowledge/`),
+  snapshots: (id) => client.get(`/documents/documents/${id}/snapshots/`),
+  relatedDocuments: (id) => client.get(`/documents/documents/${id}/related_documents/`),
+  auditTrail: (id) => client.get(`/documents/documents/${id}/audit_trail/`),
+  stats: () => client.get('/documents/documents/document_stats/'),
+  pendingReview: () => client.get('/documents/documents/pending_review/'),
+  myCheckouts: () => client.get('/documents/documents/my_checkouts/'),
+  exportDoc: (id, fmt) => client.get(`/documents/documents/${id}/export/${fmt}/`, { responseType: 'blob' }),
+}
+
+export default documentsAPI
