@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://web-production-4b02.up.railway.app/api'
+// NOTE: Hardcoded to correct Railway service URL. Vercel env var VITE_API_URL
+// was pointing to old service. Update Vercel env var to match this URL.
+const API_BASE_URL = 'https://web-production-4b02.up.railway.app/api'
 
 const client = axios.create({
   baseURL: API_BASE_URL,
